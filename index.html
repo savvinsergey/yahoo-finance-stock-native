@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yahoo finance</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://code.highcharts.com/stock/highstock.js"></script>
+</head>
+<body>
+
+    <!------ MAIN ------>
+
+    <div class="container">
+        <div class="row">
+            <br/>
+            <div class="col-md-10">
+                <input type="text" placeholder="Stock symbol" name="stock-symbol" class="form-control input-lg"/>
+            </div>
+            <div class="col-md-2 text-right">
+                <button class="btn btn-primary btn-lg add-stock" type="button" onclick="app.stocks.addChart()">Add stock chart</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 charts-container"></div>
+        </div>
+    </div>
+
+    <!------ SCRIPTS ------>
+
+    <script src="lib/api.js"></script>
+    <script src="lib/common.js"></script>
+
+    <script src="app/stock-chart.js"></script>
+    <script src="app.js"></script>
+
+    <!------ TEMPLATES ------>
+
+    <script type="text/template" id="stock-chart-tmpl">
+            <br/>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default" data-period="day"> Day </button>
+            <button type="button" class="btn btn-default" data-period="month"> Month </button>
+            <button type="button" class="btn btn-default" data-period="year"> Year </button>
+        </div>
+            <br/><br/>
+        <div class="chart"></div>
+            <br/>
+    </script>
+
+</body>
+</html>
