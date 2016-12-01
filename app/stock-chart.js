@@ -17,7 +17,7 @@
         targetChart.className = "chart-" + this.name;
 
         buttons = targetEl.querySelectorAll("button");
-        buttons.forEach(function(button){
+        buttons.forEach(function(button) {
             button.onclick = _switchPeriod.bind(this,arguments[0]);
             button.style.color = (button.dataset.period === this.period ? "#ddd" : null);
         }.bind(this));
@@ -27,9 +27,9 @@
         return targetChart;
     }
 
-    function _switchPeriod(el){
+    function _switchPeriod(el) {
         var buttons = el.parentNode.querySelectorAll('button');
-        buttons.forEach(function(button){
+        buttons.forEach(function(button) {
             button.style.color = (button.dataset.period === el.dataset.period ? "#ddd" : null);
         });
 
@@ -40,9 +40,9 @@
         }.bind(this));
     }
 
-    function _getData(cb){
+    function _getData(done) {
         if (!!this.data[this.period]) {
-            cb();
+            done();
         } else {
             global.lib.api.stocks.fetchData[this.period](
                 this.name,
@@ -50,7 +50,7 @@
                     if (response) {
                         this.data[this.period] = response;
                     }
-                    cb();
+                    done();
                 }.bind(this)
             );
         }
@@ -58,7 +58,7 @@
 
     /*-------- public ---------*/
 
-    function StockChart(container,params,cb){
+    function StockChart(container,params,done) {
         this.chart = null;
         this.block = null;
 
@@ -91,14 +91,14 @@
             series: []
         };
 
-        _getData.call(this,function(){
-            this.render(container,cb);
+        _getData.call(this,function() {
+            this.render(container,done);
         }.bind(this));
     }
 
     StockChart.prototype = {
 
-        render : function(container,cb){
+        render : function(container,done) {
 
             if (!this.data[this.period]) {
                 return;
@@ -118,16 +118,16 @@
 
             this.chart = new Highcharts.stockChart(this.block,this.config);
 
-            if (cb) {
-                cb();
+            if (done) {
+                done();
             }
 
             return this;
         }
     };
 
-    var Initialize = function(container,params,cb){
-        return new StockChart(container,params,cb);
+    var Initialize = function(container,params,done) {
+        return new StockChart(container,params,done);
     };
 
     global.$SCh = global.stockChart = Initialize;

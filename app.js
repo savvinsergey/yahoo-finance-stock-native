@@ -7,18 +7,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return {
             stocks : {
                 stockCharts: [],
-                addChart: function addChart(){
+                addChart: function addChart() {
                     var period = "year",
-                        symbol = document.querySelector("[name='stock-symbol']").value;
+                        symbol = document.querySelector("[name='stock-symbol']").value,
+                        addStockButton = document.querySelector(".add-stock");
 
-
-                    document.querySelector(".add-stock").innerText = "Loading...........";
+                    addStockButton.innerText = "Loading...........";
                     this.stockCharts.push(
                         $SCh('.charts-container',{
                             symbol : symbol,
                             period : period
-                        }, function(){
-                            document.querySelector(".add-stock").innerText = "Add stock chart";
+                        }, function() {
+                            addStockButton.innerText = "Add stock chart";
                         })
                     );
                 }
