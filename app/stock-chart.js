@@ -4,6 +4,54 @@
 
     /*-------- private ---------*/
 
+    var _period,
+        _name,
+        _config,
+        _data = {},
+        _block,
+        _define = {
+            name : function(name){
+                _name = name.toLowerCase();
+                Object.defineProperty(this,'name',{
+                    get: function(){
+                        return _name;
+                    },
+                    set: function(newValue){
+                        _name = newValue;
+                        _period = "year";
+                        _data = {};
+
+                        _config.title.text = _name.toUpperCase() + " Stocks";
+
+                        this.getData(false,function(){
+                            this.render();
+                        }.bind(this))
+                    }.bind(this)
+                });
+            },
+            period: function(period){
+                _period = period;
+                Object.defineProperty(this,'period',{
+                    get: function(){
+                        return _period;
+                    },
+                    set: function(newValue){
+                        if(["day","month","year"].indexOf(newValue) == -1) {
+                            alert("ERROR: Wrong new period");
+                            return;
+                        }
+
+                        _currentPeriodButtonChange(newValue);
+                        _period = newValue;
+
+                        this.getData(false,function(){
+                            this.render();
+                        }.bind(this))
+                    }.bind(this)
+                });
+            }
+        };
+
     function _prepareElement(container) {
         var template = document.querySelector("#stock-chart-tmpl").innerHTML,
             parentEl = document.querySelector(container),
@@ -19,7 +67,7 @@
         buttons = targetEl.querySelectorAll("button");
         buttons.forEach(function(button) {
             button.onclick = _switchPeriod.bind(this,arguments[0]);
-            button.style.color = (button.dataset.period === this.period ? "#ddd" : null);
+            button.style.color = (button.dataset.period === _period ? "#ddd" : null);
         }.bind(this));
 
         parentEl.appendChild(targetEl);
@@ -27,46 +75,39 @@
         return targetChart;
     }
 
-    function _switchPeriod(el) {
-        var buttons = el.parentNode.querySelectorAll('button');
-        buttons.forEach(function(button) {
-            button.style.color = (button.dataset.period === el.dataset.period ? "#ddd" : null);
+    function _currentPeriodButtonChange(period){
+        var buttons = _block.parentNode.querySelectorAll('button');
+        buttons.forEach(function (button) {
+            button.style.color = (button.dataset.period === period ? "#ddd" : null);
         });
+    }
 
-        this.period = el.dataset.period;
+    function _switchPeriod(el) {
+        _currentPeriodButtonChange(el.dataset.period);
+        _period = el.dataset.period;
 
-        _getData.call(this,function(){
+        this.getData.call(this, false, function () {
             this.render();
         }.bind(this));
     }
 
-    function _getData(done) {
-        if (!!this.data[this.period]) {
-            done();
-        } else {
-            global.lib.api.stocks.fetchData[this.period](
-                this.name,
-                function(response){
-                    if (response) {
-                        this.data[this.period] = response;
-                    }
-                    done();
-                }.bind(this)
-            );
-        }
-    }
-
     /*-------- public ---------*/
 
-    function StockChart(container,params,done) {
-        this.chart = null;
-        this.block = null;
+    function StockChart(params) {
 
-        this.data = {};
-        this.name = params.symbol.toLowerCase();
-        this.period = params.period;
+        if (!params.symbol || !params.container) {
+            alert("ERROR: Wrong init params");
+            return;
+        }
 
-        this.config = {
+        _define.name.call(this, params.symbol);
+        _define.period.call(this,"year");
+
+        if (params.config) {
+            params.config.title.text = _name.toUpperCase() + " Stocks";
+        }
+
+        _config = params.config || {
 
             chart: {
                 borderColor: '#C0C0C0',
@@ -81,7 +122,7 @@
             },
 
             title: {
-                text: this.name.toUpperCase() + " Stocks"
+                text: _name.toUpperCase() + " Stocks"
             },
 
             rangeSelector: {
@@ -91,43 +132,56 @@
             series: []
         };
 
-        _getData.call(this,function() {
-            this.render(container,done);
-        }.bind(this));
+        _block = _prepareElement.call(this,params.container);
     }
 
     StockChart.prototype = {
 
-        render : function(container,done) {
+        getData: function(isUpdate,done) {
+            if ( _data[ _period ] && !isUpdate ) {
+                if ( done && typeof done === "function" ) {
+                    done();
+                }
+            } else {
+                global.lib.api.
+                    stocks.fetchData[ _period ](
+                        _name,
+                        function(response) {
+                            if  (response) {
+                                _data[ _period ] = response;
+                            }
 
-            if (!this.data[this.period]) {
+                            if (done && typeof done == "function") {
+                                done();
+                            }
+                        }.bind(this)
+                    );
+            }
+        },
+
+        render : function() {
+            if ( !_data[ _period ] ) {
                 return;
             }
 
-            if (container) {
-                this.block = _prepareElement.call(this,container);
-            }
-
-            this.config.series = [{
-                name: this.name,
-                data: this.data[this.period],
+            _config.series = [{
+                name: _name,
+                data: _data[ _period ],
                 tooltip: {
                     valueDecimals: 2
                 }
             }];
 
-            this.chart = new Highcharts.stockChart(this.block,this.config);
-
-            if (done) {
-                done();
-            }
+            _block.parentNode.querySelector(".btn-group").style.display = "block";
+            new Highcharts.stockChart( _block, _config );
 
             return this;
         }
+
     };
 
-    var Initialize = function(container,params,done) {
-        return new StockChart(container,params,done);
+    var Initialize = function(params) {
+        return new StockChart(params);
     };
 
     global.$SCh = global.stockChart = Initialize;

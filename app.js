@@ -8,19 +8,22 @@ document.addEventListener('DOMContentLoaded', function() {
             stocks : {
                 stockCharts: [],
                 addChart: function addChart() {
-                    var period = "year",
+                    var stockChart,
                         symbol = document.querySelector("[name='stock-symbol']").value,
                         addStockButton = document.querySelector(".add-stock");
 
+                    stockChart = $SCh({
+                        container : '.charts-container',
+                        symbol    : symbol
+                    });
+
+                    this.stockCharts.push(stockChart);
+
                     addStockButton.innerText = "Loading...........";
-                    this.stockCharts.push(
-                        $SCh('.charts-container',{
-                            symbol : symbol,
-                            period : period
-                        }, function() {
-                            addStockButton.innerText = "Add stock chart";
-                        })
-                    );
+                    stockChart.getData(false,function(){
+                        stockChart.render();
+                        addStockButton.innerText = "Add stock chart";
+                    });
                 }
             }
         }
