@@ -104,6 +104,10 @@
         _define.period.call(this,"year");
 
         if (params.config) {
+            if (!params.config.title) {
+                params.config.title = {};
+            }
+
             params.config.title.text = _name.toUpperCase() + " Stocks";
         }
 
