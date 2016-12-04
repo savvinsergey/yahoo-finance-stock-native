@@ -101,7 +101,7 @@
         }
 
         _define.name.call(this, params.symbol);
-        _define.period.call(this,"year");
+        _define.period.call(this, params.period || "year");
 
         if (params.config) {
             if (!params.config.title) {
