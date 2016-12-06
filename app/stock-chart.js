@@ -2,6 +2,8 @@
 
     "use strict";
 
+    var Initialize;
+
     /*-------- private ---------*/
 
     var _period,
@@ -155,7 +157,7 @@
                                 _data[ _period ] = response;
                             }
 
-                            if (done && typeof done == "function") {
+                            if (done && typeof done === "function") {
                                 done();
                             }
                         }.bind(this)
@@ -184,7 +186,7 @@
 
     };
 
-    var Initialize = function(params) {
+    Initialize = function(params) {
         return new StockChart(params);
     };
 
