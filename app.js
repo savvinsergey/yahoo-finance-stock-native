@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.charts.push(stockChart);
 
                     addStockButton.innerText = "Loading...........";
-                    stockChart.getData(false,function(){
+                    chart.getData(false,function(){
                         chart.render();
                         addStockButton.innerText = "Add stock chart";
                     });
