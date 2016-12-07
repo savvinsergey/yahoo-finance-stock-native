@@ -6,22 +6,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return {
             stocks : {
-                stockCharts: [],
+                charts: [],
                 addChart: function stocksAddChart() {
-                    var stockChart,
+                    var chart,
                         symbol = document.querySelector("[name='stock-symbol']").value,
                         addStockButton = document.querySelector(".add-stock");
 
-                    stockChart = $SCh({
+                    chart = $SCh({
                         container : '.charts-container',
                         symbol    : symbol
                     });
 
-                    this.stockCharts.push(stockChart);
+                    this.charts.push(stockChart);
 
                     addStockButton.innerText = "Loading...........";
                     stockChart.getData(false,function(){
-                        stockChart.render();
+                        chart.render();
                         addStockButton.innerText = "Add stock chart";
                     });
                 }
