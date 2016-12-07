@@ -36,7 +36,7 @@
                         return _period;
                     },
                     set: function definePeriodSet(newValue){
-                        if(["day","month","year"].indexOf(newValue) == -1) {
+                        if(["day","month","year"].indexOf(newValue) === -1) {
                             alert("ERROR: Wrong new period");
                             return;
                         }
@@ -133,6 +133,10 @@
                 enabled: false
             },
 
+            tooltip: {
+                valueDecimals: 2
+            },
+
             series: []
         };
 
@@ -170,10 +174,7 @@
 
             _config.series = [{
                 name: _name,
-                data: _data[ _period ],
-                tooltip: {
-                    valueDecimals: 2
-                }
+                data: _data[ _period ]
             }];
 
             _block.parentNode.querySelector(".btn-group").style.display = "block";
