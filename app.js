@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return {
             stocks : {
                 stockCharts: [],
-                addChart: function addChart() {
+                addChart: function stocksAddChart() {
                     var stockChart,
                         symbol = document.querySelector("[name='stock-symbol']").value,
                         addStockButton = document.querySelector(".add-stock");

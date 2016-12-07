@@ -2,8 +2,6 @@
 
     "use strict";
 
-    var Initialize;
-
     /*-------- private ---------*/
 
     var _period,
@@ -12,13 +10,13 @@
         _data = {},
         _block,
         _define = {
-            name : function(name){
+            name : function defineName(name){
                 _name = name.toLowerCase();
                 Object.defineProperty(this,'name',{
-                    get: function(){
+                    get: function defineNameGet(){
                         return _name;
                     },
-                    set: function(newValue){
+                    set: function defineNameSet(newValue){
                         _name = newValue;
                         _period = "year";
                         _data = {};
@@ -31,13 +29,13 @@
                     }.bind(this)
                 });
             },
-            period: function(period){
+            period: function definePeriod(period){
                 _period = period;
                 Object.defineProperty(this,'period',{
-                    get: function(){
+                    get: function definePeriodGet(){
                         return _period;
                     },
-                    set: function(newValue){
+                    set: function definePeriodSet(newValue){
                         if(["day","month","year"].indexOf(newValue) == -1) {
                             alert("ERROR: Wrong new period");
                             return;
@@ -88,7 +86,7 @@
         _currentPeriodButtonChange(el.dataset.period);
         _period = el.dataset.period;
 
-        this.getData.call(this, false, function () {
+        this.getData.call(this, false, function() {
             this.render();
         }.bind(this));
     }
@@ -143,7 +141,7 @@
 
     StockChart.prototype = {
 
-        getData: function(isUpdate,done) {
+        getData: function getData(isUpdate,done) {
             if ( _data[ _period ] && !isUpdate ) {
                 if ( done && typeof done === "function" ) {
                     done();
@@ -165,7 +163,7 @@
             }
         },
 
-        render : function() {
+        render : function render() {
             if ( !_data[ _period ] ) {
                 return;
             }
@@ -186,9 +184,11 @@
 
     };
 
-    Initialize = function(params) {
+    //------------------------------//
+
+    function Initialize(params) {
         return new StockChart(params);
-    };
+    }
 
     global.$SCh = global.stockChart = Initialize;
 
